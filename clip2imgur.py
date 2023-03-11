@@ -18,13 +18,7 @@ from requests import post
 from sys import exit
 
 
-def upload():
-    client_id = getenv("IMGUR_CLIENT_ID")
-    client_secret = getenv("IMGUR_CLIENT_SECRET")
-    if not (client_id and client_secret):
-        print(f"client_id={client_id}, client_secret={client_secret}")
-        print("Set IMGUR_CLIENT_ID and IMGUR_CLIENT_SECRET")
-        exit(0)
+def upload(client_id, client_secret):
     headers = {"Authorization": "Client-ID " + client_id}
     url = "https://api.imgur.com/3/upload"
     buffered = BytesIO()
@@ -33,7 +27,6 @@ def upload():
         print(f"Clipboard does not appear to contain an image")
         exit(0)
     img.save(buffered, format="PNG")
-
     response = post(
         url,
         headers=headers,
@@ -48,7 +41,13 @@ def upload():
 
 
 def main():
-    link = upload()
+    client_id = getenv("IMGUR_CLIENT_ID")
+    client_secret = getenv("IMGUR_CLIENT_SECRET")
+    if not (client_id and client_secret):
+        print(f"client_id={client_id}, client_secret={client_secret}")
+        print("Set IMGUR_CLIENT_ID and IMGUR_CLIENT_SECRET")
+        exit(0)
+    link = upload(client_id, client_secret)
     print(link)
 
 
